@@ -12,5 +12,5 @@ public class AboutResumeDto
     public LocationDto Location { get; init; } = null!;
     
     public int ProjectsCount { get; init; }
-    public List<AboutExperienceDto> Experiences { get; } = new();
+    public List<AboutExperienceDto> Experiences { get; init; } = null!;
 }

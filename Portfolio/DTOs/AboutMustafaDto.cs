@@ -16,6 +16,6 @@ public class AboutMustafaDto
     public int FeedbacksCount { get; init; }
     public AboutResumeDto Resume { get; set; } = null!;
     
-    public List<TrustedByDto> TrustedBy { get; } = new();
-    public List<AboutCertificationDto> Certifications { get; } = new();
+    public List<TrustedByDto> TrustedBy { get; init; } = null!;
+    public List<AboutCertificationDto> Certifications { get; init; } = null!;
 }

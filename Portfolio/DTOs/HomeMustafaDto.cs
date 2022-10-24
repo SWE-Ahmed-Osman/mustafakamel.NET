@@ -16,6 +16,6 @@ public class HomeMustafaDto
 
     public HomeResumeDto Resume { get; set; } = null!;
     
-    public List<TrustedByDto> TrustedBy { get; } = new();
-    public List<FeedbackDto> Feedbacks { get; } = new();
+    public List<TrustedByDto> TrustedBy { get; init; } = null!;
+    public List<FeedbackDto> Feedbacks { get; init; } = null!;
 }

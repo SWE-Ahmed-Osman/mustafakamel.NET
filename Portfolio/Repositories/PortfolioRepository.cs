@@ -83,17 +83,21 @@ public class PortfolioRepository : IPortfolioRepository
     {
         var mustafa = await _portfolioContext.Mustafa
             .Include(mustafa => mustafa.Resumes)
-            .ThenInclude(resume => resume.Location)
+            .ThenInclude(resume => resume.Skills)
             .Include(mustafa => mustafa.Resumes)
-            .ThenInclude(resume => resume.Projects)
+            .ThenInclude(resume => resume.Languages)
             .Include(mustafa => mustafa.Resumes)
             .ThenInclude(resume => resume.Experiences)
             .ThenInclude(experience => experience.Company)
+            .ThenInclude(company => company.Location)
             .Include(mustafa => mustafa.Resumes)
             .ThenInclude(resume => resume.Experiences)
             .ThenInclude(experience => experience.Job)
+            .Include(mustafa => mustafa.Resumes)
+            .ThenInclude(resume => resume.Educations)
+            .ThenInclude(education => education.School)
+            .ThenInclude(company => company.Location)
             .Include(mustafa => mustafa.Feedbacks)
-            .Include(mustafa => mustafa.TrustedBy)
             .Include(mustafa => mustafa.Certifications)
             .SingleOrDefaultAsync(mustafa => mustafa.Id == 1);
 

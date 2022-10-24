@@ -16,5 +16,6 @@ public class ResumeMustafaDto
 
     public ResumeResumeDto Resume { get; set; } = null!;
     
-    public List<FeedbackDto> Feedbacks { get; } = new();
+    public List<FeedbackDto> Feedbacks { get; init; } = null!;
+    public List<CertificationDto> Certifications { get; init; } = null!;
 }

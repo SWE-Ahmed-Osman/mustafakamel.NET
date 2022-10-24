@@ -9,6 +9,8 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        CreateMap<Skill, SkillDto>();
+        CreateMap<Language, LanguageDto>();
         CreateMap<Location, LocationDto>();
         CreateMap<TrustedBy, TrustedByDto>();
         CreateMap<Feedback, FeedbackDto>()

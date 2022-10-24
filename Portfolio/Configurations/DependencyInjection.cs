@@ -191,15 +191,18 @@ public static class DependencyInjection
         {
             new Skill
             {
-                Name = "Test 1"
+                Name = "Test 1",
+                Type = SkillType.Soft
             },
             new Skill
             {
-                Name = "Test 2"
+                Name = "Test 2",
+                Type = SkillType.Hard
             },
             new Skill
             {
-                Name = "Test 3"
+                Name = "Test 3",
+                Type = SkillType.KnowledgeBased
             }
         });
         
@@ -343,15 +346,17 @@ public static class DependencyInjection
         {
             new Feedback
             {
-                Description = "Test 1",
                 Name = "Test 1",
-                Title = "Test 1"
+                Title = "Test 1",
+                Workmate = true,
+                Description = "Test 1"
             },
             new Feedback
             {
-                Description = "Test 2",
                 Name = "Test 2",
-                Title = "Test 2"
+                Title = "Test 2",
+                Workmate = false,
+                Description = "Test 2"
             }
         });
 

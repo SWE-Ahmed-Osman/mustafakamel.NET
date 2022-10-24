@@ -9,7 +9,11 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<Skill, SkillDto>();
+        CreateMap<Skill, SkillDto>()
+            .ForMember(
+                skillDto => skillDto.Type,
+                memberOptions => memberOptions.MapFrom(skill => skill.Type.ToString())
+            );
         CreateMap<Language, LanguageDto>();
         CreateMap<Location, LocationDto>();
         CreateMap<TrustedBy, TrustedByDto>();

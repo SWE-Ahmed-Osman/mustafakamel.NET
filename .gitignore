@@ -1,9 +1,22 @@
 ﻿
 mustafakamel.sln.DotSettings.user
-/Portfolio/appsettings.Development.json
 
 /.idea/
 /.vscode/
+
 /Portfolio/bin/
 /Portfolio/obj/
 /Portfolio/Database/Migrations/
+/Portfolio/appsettings.Development.json
+
+/Fathy.Common/Auth/bin/
+/Fathy.Common/Auth/obj/
+
+/Fathy.Common/Email/bin/
+/Fathy.Common/Email/obj/
+
+/Fathy.Common/Startup/bin/
+/Fathy.Common/Startup/obj/
+
+/Fathy.Common/Storage/bin/
+/Fathy.Common/Storage/obj/

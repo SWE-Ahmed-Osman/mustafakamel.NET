@@ -2,5 +2,5 @@ namespace Portfolio.DTOs;
 
 public class ResumePageDto
 {
-    public ResumeMustafaDto Mustafa { get; init; } = null!;
+    public ResumeProfileDto Profile { get; init; } = null!;
 }

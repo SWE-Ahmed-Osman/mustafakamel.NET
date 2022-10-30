@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
-using Portfolio.Dashboard.DTOs;
-using Portfolio.Dashboard.Models;
+using Portfolio.Dashboard.Get.DTOs;
+using Portfolio.Dashboard.Post.DTOs;
+using Portfolio.Dashboard.Update.DTOs;
+using Portfolio.Database.Models;
 using Portfolio.DTOs;
 
 namespace Portfolio.Utilities;
@@ -9,61 +11,60 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<Skill, SkillDto>()
-            .ForMember(
-                skillDto => skillDto.Type,
-                memberOptions => memberOptions.MapFrom(skill => skill.Type.ToString())
-            );
-        CreateMap<Language, LanguageDto>();
-        CreateMap<Location, LocationDto>();
-        CreateMap<TrustedBy, TrustedByDto>();
-        CreateMap<Feedback, FeedbackDto>()
-            .ForMember(
-                feedbackDto => feedbackDto.Feeling,
-                memberOptions => memberOptions.MapFrom(feedback => feedback.Feeling.ToString())
-            );
+        CreateMap<PostImageDto, ImageModel>();
+        CreateMap<ImageModel, GetImageDto>();
         
-        CreateMap<School, SchoolDto>();
+        CreateMap<PostSkillDto, SkillModel>();
+        CreateMap<SkillModel, GetSkillDto>();
         
-        CreateMap<Education, EducationDto>();
+        CreateMap<PostLanguageDto, LanguageModel>();
+        CreateMap<LanguageModel, GetLanguageDto>();
         
-        CreateMap<Job, AboutJobDto>();
-        CreateMap<Job, JobDto>()
-            .ForMember(
-                jobDto => jobDto.Type,
-                memberOptions => memberOptions.MapFrom(job => job.Type.ToString())
-            );
+        CreateMap<PostTrustSourceDto, TrustSourceModel>();
+        CreateMap<TrustSourceModel, GetTrustSourceDto>();
         
-        CreateMap<Company, CompanyDto>();
-        CreateMap<Company, HomeCompanyDto>();
+        CreateMap<FeedbackModel, GetFeedbackDto>();
+        CreateMap<FeedbackModel, HomeFeedbackDto>();
+        CreateMap<PostFeedbackDto, FeedbackModel>();
         
-        CreateMap<Certification, CertificationDto>();
-        CreateMap<Certification, AboutCertificationDto>();
+        CreateMap<PostProjectRequestDto, ProjectRequestModel>();
+        CreateMap<ProjectRequestModel, GetProjectRequestDto>();
+        
+        CreateMap<PostProjectDto, ProjectModel>();
+        CreateMap<ProjectModel, HomeProjectDto>();
+        CreateMap<ProjectModel, GetProjectDto>();
 
-        CreateMap<Experience, ExperienceDto>();
-        CreateMap<Experience, HomeExperienceDto>();
-        CreateMap<Experience, AboutExperienceDto>();
+        CreateMap<SchoolModel, GetSchoolDto>();
+        CreateMap<PostSchoolDto, SchoolModel>();
 
-        CreateMap<Project, ProjectDto>()
-            .ForMember(
-                projectDto => projectDto.Type,
-                memberOptions => memberOptions.MapFrom(project => project.Type.ToString())
-            );
-        CreateMap<Project, HomeProjectDto>()
-            .ForMember(
-                projectHomeDto => projectHomeDto.Type,
-                memberOptions => memberOptions.MapFrom(project => project.Type.ToString())
-            );
+        CreateMap<EducationModel, GetEducationDto>();
+        CreateMap<PostEducationDto, EducationModel>();
+        CreateMap<UpdateEducationDto, EducationModel>();
         
-        CreateMap<Resume, ResumeResumeDto>();
-        CreateMap<Resume, AboutResumeDto>()
+        CreateMap<PostCompanyDto, CompanyModel>();
+        CreateMap<CompanyModel, HomeCompanyDto>();
+        CreateMap<CompanyModel, GetCompanyDto>();
+
+        CreateMap<UpdateExperienceDto, ExperienceModel>();
+        CreateMap<PostExperienceDto, ExperienceModel>();
+        CreateMap<ExperienceModel, HomeExperienceDto>();
+        CreateMap<ExperienceModel, GetExperienceDto>();
+        
+        CreateMap<PostCertificationDto, CertificationModel>();
+        CreateMap<CertificationModel, AboutCertificationDto>();
+        CreateMap<CertificationModel, GetCertificationDto>();
+
+        CreateMap<UpdateResumeDto, ResumeModel>();
+        CreateMap<ResumeModel, ResumeResumeDto>();
+        CreateMap<ResumeModel, GetResumeDto>();
+        CreateMap<ResumeModel, AboutResumeDto>()
             .ForMember(
-                resumeAboutDto => resumeAboutDto.ProjectsCount,
+                aboutResumeDto => aboutResumeDto.ProjectsCount,
                 memberOptions => memberOptions.MapFrom(resume => resume.Projects.Count)
             );
-        CreateMap<Resume, HomeResumeDto>()
+        CreateMap<ResumeModel, HomeResumeDto>()
             .ForMember(
-                resumeHomeDto => resumeHomeDto.Experience,
+                homeResumeDto => homeResumeDto.Experience,
                 memberOptions => memberOptions
                     .MapFrom(resume => new HomeExperienceDto
                     {
@@ -75,22 +76,32 @@ public class MappingProfile : Profile
                     })
             )
             .ForMember(
-                resumeHomeDto => resumeHomeDto.LastProjects,
+                homeResumeDto => homeResumeDto.LastProjects,
                 memberOptions => memberOptions
                     .MapFrom(resume => resume.Projects.Where(project => project.IsLastProject()).ToList())
             );
 
-        CreateMap<Mustafa, HomeMustafaDto>();
-        CreateMap<Mustafa, AboutMustafaDto>()
+        CreateMap<UpdateProfileDto, ProfileModel>();
+        CreateMap<ProfileModel, GetProfileDto>();
+        CreateMap<ProfileModel, HomeProfileDto>()
             .ForMember(
-                mustafaAboutDto => mustafaAboutDto.FeedbacksCount,
-                memberOptions => memberOptions.MapFrom(mustafa => mustafa.Feedbacks.Count)
-            );
-        CreateMap<Mustafa, ResumeMustafaDto>()
-            .ForMember(
-                mustafaResumeDto => mustafaResumeDto.Feedbacks,
+                resumeProfileDto => resumeProfileDto.Feedbacks,
                 memberOptions => memberOptions
-                    .MapFrom(mustafa => mustafa.Feedbacks.Where(feedback => feedback.IsWorkmate()).ToList())
+                    .MapFrom(profile =>
+                        profile.Feedbacks.Where(feedback => feedback.IsReviewed()).ToList())
+            );
+        CreateMap<ProfileModel, ProjectProfileDto>();
+        CreateMap<ProfileModel, AboutProfileDto>()
+            .ForMember(
+                aboutProfileDto => aboutProfileDto.FeedbacksCount,
+                memberOptions => memberOptions.MapFrom(profile => profile.Feedbacks.Count)
+            );
+        CreateMap<ProfileModel, ResumeProfileDto>()
+            .ForMember(
+                resumeProfileDto => resumeProfileDto.Feedbacks,
+                memberOptions => memberOptions
+                    .MapFrom(profile =>
+                        profile.Feedbacks.Where(feedback => feedback.IsWorkmate() && feedback.IsReviewed()).ToList())
             );
     }
 }

@@ -1,118 +1,167 @@
 using AutoMapper;
+using Fathy.Common.Startup;
+using Fathy.Common.Storage;
 using Microsoft.EntityFrameworkCore;
+using Portfolio.Dashboard.Get.DTOs;
 using Portfolio.Database;
+using Portfolio.Database.Models;
 using Portfolio.DTOs;
-using Portfolio.Utilities;
 
 namespace Portfolio.Repositories;
 
 public class PortfolioRepository : IPortfolioRepository
 {
     private readonly IMapper _mapper;
+    private readonly IBlobRepository _blobRepository;
     private readonly IPortfolioContext _portfolioContext;
 
-    public PortfolioRepository(IMapper mapper, IPortfolioContext portfolioContext)
+    public PortfolioRepository(IMapper mapper, IBlobRepository blobRepository, IPortfolioContext portfolioContext)
     {
         _mapper = mapper;
+        _blobRepository = blobRepository;
         _portfolioContext = portfolioContext;
     }
     
-    public async Task<Response<HomePageDto>> HomeAsync(string language)
+    public async Task<Response<AboutPageDto>> AboutAsync(int resumeId)
     {
-        var mustafa = await _portfolioContext.Mustafa
-            .Include(mustafa => mustafa.Resumes)
-            .ThenInclude(resume => resume.Location)
-            .Include(mustafa => mustafa.Resumes)
-            .ThenInclude(resume => resume.Projects)
-            .Include(mustafa => mustafa.Resumes)
+        var profile = await _portfolioContext.Profile.AsNoTracking()
+            .Include(profile => profile.Resumes)
+            .ThenInclude(resume => resume.Projects).AsNoTracking()
+            .Include(profile => profile.Resumes)
             .ThenInclude(resume => resume.Experiences)
-            .ThenInclude(experience => experience.Company)
-            .Include(mustafa => mustafa.Feedbacks)
-            .Include(mustafa => mustafa.TrustedBy)
-            .SingleOrDefaultAsync(mustafa => mustafa.Id == 1);
-
-        var resume = language.ToLower() switch
-        {
-            "en" => mustafa!.Resumes.Last(),
-            _ => mustafa!.Resumes.First()
-        };
-
-        var homePageDto = new HomePageDto
-        {
-            Mustafa = _mapper.Map<HomeMustafaDto>(mustafa)
-        };
-        homePageDto.Mustafa.Resume = _mapper.Map<HomeResumeDto>(resume);
-        
-        return ResponseFactory.Ok(homePageDto);
-    }
-    
-    public async Task<Response<AboutPageDto>> AboutAsync(string language)
-    {
-        var mustafa = await _portfolioContext.Mustafa
-            .Include(mustafa => mustafa.Resumes)
-            .ThenInclude(resume => resume.Location)
-            .Include(mustafa => mustafa.Resumes)
-            .ThenInclude(resume => resume.Projects)
-            .Include(mustafa => mustafa.Resumes)
-            .ThenInclude(resume => resume.Experiences)
-            .ThenInclude(experience => experience.Company)
-            .Include(mustafa => mustafa.Resumes)
-            .ThenInclude(resume => resume.Experiences)
-            .ThenInclude(experience => experience.Job)
-            .Include(mustafa => mustafa.Feedbacks)
-            .Include(mustafa => mustafa.TrustedBy)
-            .Include(mustafa => mustafa.Certifications)
-            .SingleOrDefaultAsync(mustafa => mustafa.Id == 1);
-
-        var resume = language.ToLower() switch
-        {
-            "en" => mustafa!.Resumes.Last(),
-            _ => mustafa!.Resumes.First()
-        };
+            .ThenInclude(experience => experience.Company).AsNoTracking()
+            .Include(profile => profile.Feedbacks).AsNoTracking()
+            .Include(profile => profile.TrustSources).AsNoTracking()
+            .Include(profile => profile.Certifications).AsNoTracking()
+            .FirstAsync();
 
         var aboutPageDto = new AboutPageDto
         {
-            Mustafa = _mapper.Map<AboutMustafaDto>(mustafa)
+            Profile = _mapper.Map<AboutProfileDto>(profile)
         };
-        aboutPageDto.Mustafa.Resume = _mapper.Map<AboutResumeDto>(resume);
-        
+        aboutPageDto.Profile.Resume =
+            _mapper.Map<AboutResumeDto>(profile.Resumes.SingleOrDefault(resume => resume.Id == resumeId));
+
         return ResponseFactory.Ok(aboutPageDto);
     }
     
-    public async Task<Response<ResumePageDto>> ResumeAsync(string language)
+    public async Task<Response> AddFeedbackAsync(PostFeedbackDto postFeedbackDto)
     {
-        var mustafa = await _portfolioContext.Mustafa
-            .Include(mustafa => mustafa.Resumes)
-            .ThenInclude(resume => resume.Skills)
-            .Include(mustafa => mustafa.Resumes)
-            .ThenInclude(resume => resume.Languages)
-            .Include(mustafa => mustafa.Resumes)
-            .ThenInclude(resume => resume.Experiences)
-            .ThenInclude(experience => experience.Company)
-            .ThenInclude(company => company.Location)
-            .Include(mustafa => mustafa.Resumes)
-            .ThenInclude(resume => resume.Experiences)
-            .ThenInclude(experience => experience.Job)
-            .Include(mustafa => mustafa.Resumes)
-            .ThenInclude(resume => resume.Educations)
-            .ThenInclude(education => education.School)
-            .ThenInclude(company => company.Location)
-            .Include(mustafa => mustafa.Feedbacks)
-            .Include(mustafa => mustafa.Certifications)
-            .SingleOrDefaultAsync(mustafa => mustafa.Id == 1);
+        var feedback = _mapper.Map<FeedbackModel>(postFeedbackDto);
 
-        var resume = language.ToLower() switch
+        if (postFeedbackDto.ImageFile is not null)
         {
-            "en" => mustafa!.Resumes.Last(),
-            _ => mustafa!.Resumes.First()
-        };
+            var imageName = Guid.NewGuid().ToString();
+            
+            try
+            {
+                feedback.ImageUrl = await _blobRepository.UploadBlobAsync(imageName, postFeedbackDto.ImageFile);
+                feedback.ImageName = imageName;
+            }
+            catch (Exception e)
+            {
+                feedback.ImageUrl = e.Message;
+                feedback.ImageName = imageName;
+            }
+        }
 
-        var resumePageDto = new ResumePageDto()
+        await _portfolioContext.Feedback.AddAsync(feedback);
+        return await _portfolioContext.SaveChangesAsync() == 0
+            ? ResponseFactory.Fail<Response>()
+            : ResponseFactory.Ok();
+    }
+
+    public async Task<Response> AddProjectRequestAsync(PostProjectRequestDto postProjectRequestDto)
+    {
+        var projectRequest = _mapper.Map<ProjectRequestModel>(postProjectRequestDto);
+
+        var pdfName = Guid.NewGuid().ToString();
+
+        try
         {
-            Mustafa = _mapper.Map<ResumeMustafaDto>(mustafa)
+            projectRequest.PdfUrl = await _blobRepository.UploadBlobAsync(pdfName, postProjectRequestDto.PdfFile);
+            projectRequest.PdfName = pdfName;
+        }
+        catch (Exception e)
+        {
+            projectRequest.PdfUrl = e.Message;
+            projectRequest.PdfName = pdfName;
+        }
+
+        await _portfolioContext.ProjectRequest.AddAsync(projectRequest);
+        return await _portfolioContext.SaveChangesAsync() == 0
+            ? ResponseFactory.Fail<Response>()
+            : ResponseFactory.Ok();
+    }
+    
+    public async Task<Response<HomePageDto>> HomeAsync(int resumeId)
+    {
+        var profile = await _portfolioContext.Profile.AsNoTracking()
+            .Include(profile => profile.Resumes)
+            .ThenInclude(resume => resume.Projects).AsNoTracking()
+            .Include(profile => profile.Resumes)
+            .ThenInclude(resume => resume.Experiences)
+            .ThenInclude(experience => experience.Company).AsNoTracking()
+            .Include(profile => profile.Feedbacks).AsNoTracking()
+            .Include(profile => profile.TrustSources).AsNoTracking()
+            .FirstAsync();
+
+        var homePageDto = new HomePageDto
+        {
+            Profile = _mapper.Map<HomeProfileDto>(profile)
         };
-        resumePageDto.Mustafa.Resume = _mapper.Map<ResumeResumeDto>(resume);
+        homePageDto.Profile.Resume =
+            _mapper.Map<HomeResumeDto>(profile.Resumes.SingleOrDefault(resume => resume.Id == resumeId));
         
+        return ResponseFactory.Ok(homePageDto);
+    }
+
+    public async Task<Response<ProjectPageDto>> ProjectAsync(int resumeId, int category, int type)
+    {
+        var profile = await _portfolioContext.Profile.AsNoTracking()
+            .Include(profile => profile.Resumes)
+            .ThenInclude(resume => resume.Projects).AsNoTracking()
+            .FirstAsync();
+        
+        var resume = profile.Resumes.SingleOrDefault(resume => resume.Id == resumeId);
+        
+        var projectPageDto = new ProjectPageDto
+        {
+            Profile = _mapper.Map<ProjectProfileDto>(profile)
+        };
+        projectPageDto.Profile.Resume.SpecificProjects = type == -1
+            ? resume!.Projects.Where(project => (int)project.Category == category)
+                .Select(project => _mapper.Map<GetProjectDto>(project)).ToList()
+            : resume!.Projects.Where(project => (int)project.Category == category && (int)project.Type == type)
+                .Select(project => _mapper.Map<GetProjectDto>(project)).ToList();
+
+        return ResponseFactory.Ok(projectPageDto);
+    }
+
+    public async Task<Response<ResumePageDto>> ResumeAsync(int resumeId)
+    {
+        var profile = await _portfolioContext.Profile.AsNoTracking()
+            .Include(profile => profile.Resumes)
+            .ThenInclude(resume => resume.Skills).AsNoTracking()
+            .Include(profile => profile.Resumes)
+            .ThenInclude(resume => resume.Languages).AsNoTracking()
+            .Include(profile => profile.Resumes)
+            .ThenInclude(resume => resume.Experiences)
+            .ThenInclude(experience => experience.Company).AsNoTracking()
+            .Include(profile => profile.Resumes)
+            .ThenInclude(resume => resume.Educations)
+            .ThenInclude(education => education.School).AsNoTracking()
+            .Include(profile => profile.Feedbacks).AsNoTracking()
+            .Include(profile => profile.Certifications).AsNoTracking()
+            .FirstAsync();
+
+        var resumePageDto = new ResumePageDto
+        {
+            Profile = _mapper.Map<ResumeProfileDto>(profile)
+        };
+        resumePageDto.Profile.Resume =
+            _mapper.Map<ResumeResumeDto>(profile.Resumes.SingleOrDefault(resume => resume.Id == resumeId));
+
         return ResponseFactory.Ok(resumePageDto);
     }
 }

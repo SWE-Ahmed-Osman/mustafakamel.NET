@@ -34,12 +34,12 @@ public class UpdateDashboardRepository : IUpdateDashboardRepository
             : ResponseFactory.Ok();
     }
 
-    public async Task<Response> FeedbackAsync(int feedbackId, bool reviewed, bool workmate)
+    public async Task<Response> FeedbackAsync(int feedbackId, bool view, bool workmate)
     {
         var feedback = await _portfolioContext.Feedback.SingleOrDefaultAsync(feedback => feedback.Id == feedbackId);
         
-        feedback!.Workmate = workmate;
-        feedback.Reviewed = reviewed;
+        feedback!.View = view;
+        feedback.Workmate = workmate;
 
         return await _portfolioContext.SaveChangesAsync() == 0
             ? ResponseFactory.Fail<Response>()

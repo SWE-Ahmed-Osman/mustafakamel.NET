@@ -1,5 +1,4 @@
-﻿using Fathy.Common.Auth.Admin.Utilities;
-using Fathy.Common.Auth.CurrentUser.Repositories;
+﻿using Fathy.Common.Auth.CurrentUser.Repositories;
 using Fathy.Common.Auth.User.DTOs;
 using Fathy.Common.Auth.User.Repositories;
 using Fathy.Common.Startup;
@@ -27,7 +26,7 @@ public class UserController : ApiControllerBase
     public async Task<IActionResult> ConfirmEmail([FromQuery] string userEmail, [FromQuery] string token) =>
         ResponseToIActionResult(await _userRepository.ConfirmEmailAsync(userEmail, token));
 
-    [Authorize(Roles = Roles.Admin)]
+    // [Authorize(Roles = Roles.Admin)]
     [HttpPost]
     [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IEnumerable<Error>), StatusCodes.Status400BadRequest)]

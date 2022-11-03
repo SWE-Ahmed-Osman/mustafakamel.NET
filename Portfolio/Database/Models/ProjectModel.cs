@@ -8,6 +8,8 @@ public class ProjectModel
     public int ResumeModelId { get; set; }
 
     public double Price { get; set; }
+    public bool ForSale { get; set; }
+    public bool LastProject { get; set; }
     public ProjectType Type { get; set; }
     public ProjectCategory Category { get; set; }
     public string Description { get; set; } = null!;
@@ -27,13 +29,7 @@ public class ProjectModel
     
     public string LightPdfName { get; set; } = null!;
     public string LightPdfUrl { get; set; } = null!;
-    
-    public bool ForSale { get; set; }
-    public bool IsForSale() => ForSale;
 
-    public bool LastProject { get; set; }
-    public bool IsLastProject() => LastProject;
-    
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }
 }

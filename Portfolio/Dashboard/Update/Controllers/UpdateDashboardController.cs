@@ -1,13 +1,11 @@
-using Fathy.Common.Auth.Admin.Utilities;
 using Fathy.Common.Startup;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Portfolio.Dashboard.Update.DTOs;
 using Portfolio.Dashboard.Update.Repositories;
 
 namespace Portfolio.Dashboard.Update.Controllers;
 
-[Authorize(Roles = Roles.Admin)]
+// [Authorize(Roles = Roles.Admin)]
 public class UpdateDashboardController : ApiControllerBase
 {
     private readonly IUpdateDashboardRepository _updateDashboardRepository;
@@ -36,8 +34,8 @@ public class UpdateDashboardController : ApiControllerBase
     [ProducesResponseType(typeof(IEnumerable<Error>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(IEnumerable<Error>), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Feedback(
-        [FromQuery] int feedbackId, [FromQuery] bool reviewed, [FromQuery] bool workmate) =>
-        ResponseToIActionResult(await _updateDashboardRepository.FeedbackAsync(feedbackId, reviewed, workmate));
+        [FromQuery] int feedbackId, [FromQuery] bool view, [FromQuery] bool workmate) =>
+        ResponseToIActionResult(await _updateDashboardRepository.FeedbackAsync(feedbackId, view, workmate));
     
     [HttpPut]
     [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]

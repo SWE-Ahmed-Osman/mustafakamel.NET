@@ -1,6 +1,4 @@
-using Fathy.Common.Auth.Admin.Utilities;
 using Fathy.Common.Startup;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Portfolio.Dashboard.Get.DTOs;
 using Portfolio.Dashboard.Post.DTOs;
@@ -8,7 +6,7 @@ using Portfolio.Dashboard.Post.Repositories;
 
 namespace Portfolio.Dashboard.Post.Controllers;
 
-[Authorize(Roles = Roles.Admin)]
+// [Authorize(Roles = Roles.Admin)]
 public class PostDashboardController : ApiControllerBase
 {
     private readonly IPostDashboardRepository _postDashboardRepository;

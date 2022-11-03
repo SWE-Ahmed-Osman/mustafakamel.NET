@@ -1,12 +1,10 @@
-using Fathy.Common.Auth.Admin.Utilities;
 using Fathy.Common.Startup;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Portfolio.Dashboard.Delete.Repositories;
 
 namespace Portfolio.Dashboard.Delete.Controllers;
 
-[Authorize(Roles = Roles.Admin)]
+// [Authorize(Roles = Roles.Admin)]
 public class DeleteDashboardController : ApiControllerBase
 {
     private readonly IDeleteDashboardRepository _deleteDashboardRepository;

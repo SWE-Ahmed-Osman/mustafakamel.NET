@@ -78,7 +78,7 @@ public class MappingProfile : Profile
             .ForMember(
                 homeResumeDto => homeResumeDto.LastProjects,
                 memberOptions => memberOptions
-                    .MapFrom(resume => resume.Projects.Where(project => project.IsLastProject()).ToList())
+                    .MapFrom(resume => resume.Projects.Where(project => project.LastProject).ToList())
             );
 
         CreateMap<UpdateProfileDto, ProfileModel>();
@@ -88,7 +88,7 @@ public class MappingProfile : Profile
                 resumeProfileDto => resumeProfileDto.Feedbacks,
                 memberOptions => memberOptions
                     .MapFrom(profile =>
-                        profile.Feedbacks.Where(feedback => feedback.IsReviewed()).ToList())
+                        profile.Feedbacks.Where(feedback => feedback.View).ToList())
             );
         CreateMap<ProfileModel, ProjectProfileDto>();
         CreateMap<ProfileModel, AboutProfileDto>()
@@ -101,7 +101,7 @@ public class MappingProfile : Profile
                 resumeProfileDto => resumeProfileDto.Feedbacks,
                 memberOptions => memberOptions
                     .MapFrom(profile =>
-                        profile.Feedbacks.Where(feedback => feedback.IsWorkmate() && feedback.IsReviewed()).ToList())
+                        profile.Feedbacks.Where(feedback => feedback.Workmate && feedback.View).ToList())
             );
     }
 }

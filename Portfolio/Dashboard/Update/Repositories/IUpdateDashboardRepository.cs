@@ -7,7 +7,7 @@ public interface IUpdateDashboardRepository
 {
     Task<Response> EducationAsync(UpdateEducationDto updateEducationDto);
     Task<Response> ExperienceAsync(UpdateExperienceDto updateExperienceDto);
-    Task<Response> FeedbackAsync(int feedbackId, bool reviewed, bool workmate);
+    Task<Response> FeedbackAsync(int feedbackId, bool view, bool workmate);
     Task<Response> ProfileAsync(UpdateProfileDto updateProfileDto);
     Task<Response> ProjectAsync(UpdateProjectDto updateProjectDto);
     Task<Response> ResumeAsync(UpdateResumeDto updateResumeDto);

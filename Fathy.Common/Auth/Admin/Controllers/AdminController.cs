@@ -1,13 +1,12 @@
 ﻿using Fathy.Common.Auth.Admin.Repositories;
 using Fathy.Common.Auth.Admin.Utilities;
 using Fathy.Common.Startup;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fathy.Common.Auth.Admin.Controllers;
 
-[Authorize(Roles = Roles.Admin)]
+// [Authorize(Roles = Roles.Admin)]
 public class AdminController : ApiControllerBase
 {
     private readonly IAdminRepository _adminRepository;

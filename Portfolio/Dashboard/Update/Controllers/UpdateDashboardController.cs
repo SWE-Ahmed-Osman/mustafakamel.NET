@@ -5,6 +5,7 @@ using Portfolio.Dashboard.Update.Repositories;
 
 namespace Portfolio.Dashboard.Update.Controllers;
 
+// TODO: Authorize UpdateDashboardController.
 // [Authorize(Roles = Roles.Admin)]
 public class UpdateDashboardController : ApiControllerBase
 {

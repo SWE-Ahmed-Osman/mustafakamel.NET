@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Fathy.Common.Auth.Admin.Controllers;
 
+// TODO: Delete AdminController.
 // [Authorize(Roles = Roles.Admin)]
 public class AdminController : ApiControllerBase
 {

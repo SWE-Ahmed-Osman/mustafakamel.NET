@@ -6,6 +6,7 @@ using Portfolio.Dashboard.Post.Repositories;
 
 namespace Portfolio.Dashboard.Post.Controllers;
 
+// TODO: Authorize PostDashboardController.
 // [Authorize(Roles = Roles.Admin)]
 public class PostDashboardController : ApiControllerBase
 {

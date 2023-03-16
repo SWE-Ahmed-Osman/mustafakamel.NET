@@ -4,6 +4,7 @@ using Portfolio.Dashboard.Delete.Repositories;
 
 namespace Portfolio.Dashboard.Delete.Controllers;
 
+// TODO: Authorize DeleteDashboardController.
 // [Authorize(Roles = Roles.Admin)]
 public class DeleteDashboardController : ApiControllerBase
 {

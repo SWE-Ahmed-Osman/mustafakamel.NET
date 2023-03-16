@@ -5,6 +5,7 @@ using Portfolio.Dashboard.Get.Repositories;
 
 namespace Portfolio.Dashboard.Get.Controllers;
 
+// TODO: Authorize GetDashboardController.
 // [Authorize(Roles = Roles.Admin)]
 public class GetDashboardController : ApiControllerBase
 {

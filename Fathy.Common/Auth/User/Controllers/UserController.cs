@@ -19,6 +19,7 @@ public class UserController : ApiControllerBase
         _currentUserRepository = currentUserRepository;
     }
     
+    // TODO: Delete ConfirmEmail Method.
     [HttpGet]
     [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IEnumerable<Error>), StatusCodes.Status404NotFound)]
@@ -26,13 +27,14 @@ public class UserController : ApiControllerBase
     public async Task<IActionResult> ConfirmEmail([FromQuery] string userEmail, [FromQuery] string token) =>
         ResponseToIActionResult(await _userRepository.ConfirmEmailAsync(userEmail, token));
 
-    // [Authorize(Roles = Roles.Admin)]
+    // TODO: Delete Create Method.
     [HttpPost]
     [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IEnumerable<Error>), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create([FromBody] UserDto userDto) =>
         ResponseToIActionResult(await _userRepository.CreateAsync(userDto));
     
+    // TODO: Delete Delete Method.
     [Authorize]
     [HttpDelete]
     [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]
@@ -42,6 +44,7 @@ public class UserController : ApiControllerBase
         ResponseToIActionResult(await _userRepository.DeleteAsync(
             new UserDto { Email = _currentUserRepository.UserEmail, Password = password }));
     
+    // TODO: Delete ResendConfirmationEmail Method.
     [HttpGet]
     [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IEnumerable<Error>), StatusCodes.Status404NotFound)]

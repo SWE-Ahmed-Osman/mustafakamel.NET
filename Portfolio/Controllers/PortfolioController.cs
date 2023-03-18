@@ -32,11 +32,11 @@ public class PortfolioController : ApiControllerBase
     public async Task<IActionResult> AddProjectRequest([FromForm] PostProjectRequestDto postProjectRequestDto) =>
         ResponseToIActionResult(await _portfolioRepository.AddProjectRequestAsync(postProjectRequestDto));
 
-    [HttpGet("{resumeId:int}")]
+    [HttpGet("{language}")]
     [ProducesResponseType(typeof(Response<HomePageDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IEnumerable<Error>), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Home([FromRoute] int resumeId) =>
-        ResponseToIActionResult(await _portfolioRepository.HomeAsync(resumeId));
+    public async Task<IActionResult> Home([FromRoute] string language) =>
+        ResponseToIActionResult(await _portfolioRepository.HomeAsync(language == "ar" ? 1 : 2));
 
     [HttpGet("{resumeId:int}/{category:int:min(0):max(1)}/{type:int:min(-1):max(5)}")]
     [ProducesResponseType(typeof(Response<ProjectPageDto>), StatusCodes.Status200OK)]

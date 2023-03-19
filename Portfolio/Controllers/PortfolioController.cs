@@ -14,11 +14,11 @@ public class PortfolioController : ApiControllerBase
         _portfolioRepository = portfolioRepository;
     }
     
-    [HttpGet("{resumeId:int}")]
+    [HttpGet("{language}")]
     [ProducesResponseType(typeof(Response<AboutPageDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IEnumerable<Error>), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> About([FromRoute] int resumeId) =>
-        ResponseToIActionResult(await _portfolioRepository.AboutAsync(resumeId));
+    public async Task<IActionResult> About([FromRoute] string language) =>
+        ResponseToIActionResult(await _portfolioRepository.AboutAsync(language));
 
     [HttpPost]
     [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]
@@ -36,18 +36,18 @@ public class PortfolioController : ApiControllerBase
     [ProducesResponseType(typeof(Response<HomePageDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IEnumerable<Error>), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Home([FromRoute] string language) =>
-        ResponseToIActionResult(await _portfolioRepository.HomeAsync(language == "ar" ? 1 : 2));
+        ResponseToIActionResult(await _portfolioRepository.HomeAsync(language));
 
-    [HttpGet("{resumeId:int}/{category:int:min(0):max(1)}/{type:int:min(-1):max(5)}")]
+    [HttpGet("{language}/{category:int:min(0):max(1)}")]
     [ProducesResponseType(typeof(Response<ProjectPageDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IEnumerable<Error>), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Project([FromRoute] int resumeId,
-        [FromRoute] int category, [FromRoute] int type) =>
-        ResponseToIActionResult(await _portfolioRepository.ProjectAsync(resumeId, category, type));
+    public async Task<IActionResult> Project([FromRoute] string language,
+        [FromRoute] int category, [FromQuery] int? type) =>
+        ResponseToIActionResult(await _portfolioRepository.ProjectAsync(language, category, type));
 
-    [HttpGet("{resumeId:int}")]
+    [HttpGet("{language}")]
     [ProducesResponseType(typeof(Response<ResumePageDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(IEnumerable<Error>), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Resume([FromRoute] int resumeId) =>
-        ResponseToIActionResult(await _portfolioRepository.ResumeAsync(resumeId));
+    public async Task<IActionResult> Resume([FromRoute] string language) =>
+        ResponseToIActionResult(await _portfolioRepository.ResumeAsync(language));
 }

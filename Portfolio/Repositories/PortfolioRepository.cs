@@ -22,7 +22,7 @@ public class PortfolioRepository : IPortfolioRepository
         _portfolioContext = portfolioContext;
     }
     
-    public async Task<Response<AboutPageDto>> AboutAsync(int resumeId)
+    public async Task<Response<AboutPageDto>> AboutAsync(string language)
     {
         var profile = await _portfolioContext.Profile.AsNoTracking()
             .Include(profile => profile.Resumes)
@@ -39,6 +39,7 @@ public class PortfolioRepository : IPortfolioRepository
         {
             Profile = _mapper.Map<AboutProfileDto>(profile)
         };
+        var resumeId = language == "ar" ? 1 : 2;
         aboutPageDto.Profile.Resume =
             _mapper.Map<AboutResumeDto>(profile.Resumes.SingleOrDefault(resume => resume.Id == resumeId));
 
@@ -94,7 +95,7 @@ public class PortfolioRepository : IPortfolioRepository
             : ResponseFactory.Ok();
     }
     
-    public async Task<Response<HomePageDto>> HomeAsync(int resumeId)
+    public async Task<Response<HomePageDto>> HomeAsync(string language)
     {
         var profile = await _portfolioContext.Profile.AsNoTracking()
             .Include(profile => profile.Resumes)
@@ -110,26 +111,28 @@ public class PortfolioRepository : IPortfolioRepository
         {
             Profile = _mapper.Map<HomeProfileDto>(profile)
         };
+        var resumeId = language == "ar" ? 1 : 2;
         homePageDto.Profile.Resume =
             _mapper.Map<HomeResumeDto>(profile.Resumes.SingleOrDefault(resume => resume.Id == resumeId));
         
         return ResponseFactory.Ok(homePageDto);
     }
 
-    public async Task<Response<ProjectPageDto>> ProjectAsync(int resumeId, int category, int type)
+    public async Task<Response<ProjectPageDto>> ProjectAsync(string language, int category, int? type)
     {
         var profile = await _portfolioContext.Profile.AsNoTracking()
             .Include(profile => profile.Resumes)
             .ThenInclude(resume => resume.Projects).AsNoTracking()
             .FirstAsync();
         
+        var resumeId = language == "ar" ? 1 : 2;
         var resume = profile.Resumes.SingleOrDefault(resume => resume.Id == resumeId);
         
         var projectPageDto = new ProjectPageDto
         {
             Profile = _mapper.Map<ProjectProfileDto>(profile)
         };
-        projectPageDto.Profile.Resume.SpecificProjects = type == -1
+        projectPageDto.Profile.Resume.SpecificProjects = type is null
             ? resume!.Projects.Where(project => (int)project.Category == category)
                 .Select(project => _mapper.Map<GetProjectDto>(project)).ToList()
             : resume!.Projects.Where(project => (int)project.Category == category && (int)project.Type == type)
@@ -138,7 +141,7 @@ public class PortfolioRepository : IPortfolioRepository
         return ResponseFactory.Ok(projectPageDto);
     }
 
-    public async Task<Response<ResumePageDto>> ResumeAsync(int resumeId)
+    public async Task<Response<ResumePageDto>> ResumeAsync(string language)
     {
         var profile = await _portfolioContext.Profile.AsNoTracking()
             .Include(profile => profile.Resumes)
@@ -159,6 +162,7 @@ public class PortfolioRepository : IPortfolioRepository
         {
             Profile = _mapper.Map<ResumeProfileDto>(profile)
         };
+        var resumeId = language == "ar" ? 1 : 2;
         resumePageDto.Profile.Resume =
             _mapper.Map<ResumeResumeDto>(profile.Resumes.SingleOrDefault(resume => resume.Id == resumeId));
 
